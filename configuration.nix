@@ -84,10 +84,16 @@
     shell = pkgs.fish;
   };
 
+  environment.variables = {
+    EDITOR = "hx";
+    VISUAL = "hx";
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.config.packageOverrides = pkgs: {
+    hypr-tools = pkgs.callPackage ./pkgs/hypr-tools.nix { };
     kbct = pkgs.callPackage ./pkgs/kbct.nix { };
   };
 
@@ -124,6 +130,7 @@
     nsxiv
     udiskie
     kbct
+    hypr-tools
 
     # image/vector graphics
     gimp3
