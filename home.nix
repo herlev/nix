@@ -13,6 +13,11 @@
       recursive = true;
     };
 
+    file.".config/helix" = {
+      source = ./helix;
+      recursive = true;
+    };
+
     stateVersion = "25.05";
   };
 
