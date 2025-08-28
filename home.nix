@@ -4,8 +4,14 @@
     username = "victor";
     homeDirectory = "/home/victor";
     packages = with pkgs; [
+      tmux
       # hello
     ];
+
+    file.".config/tmux" = {
+      source = ./tmux;
+      recursive = true;
+    };
 
     stateVersion = "25.05";
   };
