@@ -128,10 +128,13 @@
     blueberry
     zathura
     nwg-displays
+    nwg-look
     nsxiv
     udiskie
     kbct
     hypr-tools
+    phinger-cursors
+    wl-clipboard
 
     # image/vector graphics
     gimp3
@@ -150,6 +153,7 @@
     wireshark
 
     # cli tools
+    zoxide
     ripgrep
     fd
     bat
@@ -204,6 +208,11 @@
                 semicolon: esc
       '';
       package = pkgs.kbct;
+    };
+    logind = {
+      powerKey = "suspend";
+      lidSwitch = "suspend";
+      lidSwitchExternalPower = "ignore";
     };
   };
 
