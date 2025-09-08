@@ -111,9 +111,6 @@
     pkg-config
     cargo
 
-    # LSPs
-    nil # Nix
-
     os-prober
 
     # DE stuff
@@ -153,7 +150,6 @@
     wireshark
 
     # cli tools
-    zoxide
     ripgrep
     fd
     bat
