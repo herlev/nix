@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 {
   home = {
     username = "victor";
@@ -255,6 +255,29 @@
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+  };
+
+  programs.firefox = {
+    enable = true;
+    profiles.default = {
+      name = "default";
+      isDefault = true;
+      settings = {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      };
+      extensions.packages = with inputs.firefox-addons.packages."x86_64-linux"; [
+        ublock-origin
+        vimium
+        sidebery
+      ];
+      userChrome = ''
+        #TabsToolbar {
+            visibility: collapse
+        }
+
+        #sidebar-header{ display: none }
+      '';
+    };
   };
 
   programs.helix = {
