@@ -9,6 +9,8 @@
       libnotify
       networkmanagerapplet
       nsxiv
+      yad
+      tealdeer
       # hello
     ];
 
