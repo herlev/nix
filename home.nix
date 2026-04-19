@@ -1,4 +1,8 @@
 { config, pkgs, inputs, ... }:
+let
+  dots = "${config.home.homeDirectory}/nix";
+  symlink = path: config.lib.file.mkOutOfStoreSymlink "${dots}/${path}";
+in
 {
   home = {
     username = "victor";
@@ -17,6 +21,11 @@
     file.".config/tmux" = {
       source = ./tmux;
       recursive = true;
+    };
+
+    file.".config/DankMaterialShell" = {
+      # Symlink needed here for dms settings GUI to work
+      source = symlink "dms";
     };
 
     file.".config/rustfmt" = {
