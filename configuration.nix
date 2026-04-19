@@ -2,16 +2,22 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
     ./hardware-configuration.nix # Include the results of the hardware scan.
     ./modules/kbct.nix
+    inputs.dms.nixosModules.dank-material-shell
   ];
 
-
-  fileSystems."/mnt/arch" = { # os-prober hangs if this is not mounted
+  fileSystems."/mnt/arch" = {
+    # os-prober hangs if this is not mounted
     device = "/dev/nvme0n1p3";
     fsType = "ext4";
   };
@@ -25,15 +31,8 @@
   };
 
   # Bootloader.
-  #boot.loader.systemd-boot.enable = true;
-  #boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
-    enable = true;
-    device = "nodev";
-    useOSProber = true;
-    efiSupport = true;
-  };
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -79,7 +78,10 @@
   users.users.victor = {
     isNormalUser = true;
     description = "victor";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     # packages = with pkgs; [];
     shell = pkgs.fish;
   };
@@ -92,10 +94,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.config.packageOverrides = pkgs: {
-    hypr-tools = pkgs.callPackage ./pkgs/hypr-tools.nix { };
-    kbct = pkgs.callPackage ./pkgs/kbct.nix { };
-  };
+  nixpkgs.overlays = [
+    (final: prev: {
+      hypr-tools = final.callPackage ./pkgs/hypr-tools.nix { };
+      kbct = final.callPackage ./pkgs/kbct.nix { };
+    })
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -107,6 +111,8 @@
 
     # dev
     git
+    jujutsu
+    jjui
     gcc
     pkg-config
     cargo
@@ -114,7 +120,6 @@
     os-prober
 
     # DE stuff
-    waybar
     avizo # volumectl lightctl
     dunst
     kitty
@@ -141,7 +146,7 @@
     freecad-wayland
     solvespace
     f3d
-    
+
     grim
     slurp
 
@@ -158,7 +163,9 @@
     libqalculate
     tio
     bottom
-    
+    just
+
+    arch-install-scripts # for arch-chroot
   ];
 
   fonts.packages = with pkgs; [
@@ -171,6 +178,12 @@
     firefox.enable = true;
     thunderbird.enable = true;
     kdeconnect.enable = true;
+    dank-material-shell = {
+      enable = true;
+      systemd.enable = true;
+      enableSystemMonitoring = true;
+      dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    };
 
     nm-applet.enable = true;
     hyprland = {
@@ -206,9 +219,11 @@
       package = pkgs.kbct;
     };
     logind = {
-      powerKey = "suspend";
-      lidSwitch = "suspend";
-      lidSwitchExternalPower = "ignore";
+      settings.Login = {
+        HandlePowerKey = "suspend";
+        HandleLidSwitchExternalPower = "ignore";
+        HandleLidSwitch = "suspend";
+      };
     };
   };
 
@@ -244,5 +259,8 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }

@@ -78,8 +78,10 @@
 
   programs.git = {
     enable = true;
-    userName = "herlev";
-    userEmail = "";
+    settings.user = {
+      name = "herlev";
+      email = "";
+    };
   };
 
   programs.yazi = {
@@ -279,6 +281,13 @@
       '';
     };
   };
+
+  programs.kitty = {
+    # enable = true;
+    # TODO
+  };
+
+  # TODO: rxiv tmux
 
   programs.helix = {
     enable = true;
